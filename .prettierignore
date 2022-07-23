@@ -10,6 +10,3 @@ node_modules
 
 # Javascript (compiled) version
 /lib
-
-# Secrets
-.env
