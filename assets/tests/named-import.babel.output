@@ -2,12 +2,13 @@ const _messages = {
   "isInjected": true,
   "keyValueObjectCollection": {
     "en-us": {
-      "hello": "world"
+      "greeting": "Hello world"
     }
   },
   "sourceFilePath": "assets/tests/named-import.ts"
 };
-import { getMessages } from './';
+// @ts-nocheck
+import { getMessages } from 'messages-modules';
 
 const _getMessagesFunction = getMessages.bind(_messages);
 

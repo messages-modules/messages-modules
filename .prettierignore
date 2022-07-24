@@ -12,4 +12,4 @@ node_modules
 /lib
 
 # Test output files
-*.output
+/assets/tests/*

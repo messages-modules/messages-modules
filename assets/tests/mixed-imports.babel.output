@@ -1,0 +1,34 @@
+const _messages2 = {
+  "isInjected": true,
+  "keyValueObjectCollection": {
+    "en-us": {
+      "greeting": "Hello world"
+    },
+    "fr-ca": {
+      "greeting": "Bonjour le monde"
+    }
+  },
+  "sourceFilePath": "assets/tests/mixed-imports.ts"
+};
+// @ts-nocheck
+import { getMessages } from 'messages-modules';
+
+const _getMessagesFunction = getMessages.bind(_messages2);
+
+import { getMessages as getMessages2 } from 'messages-modules';
+
+const _getMessagesFunction2 = getMessages2.bind(_messages2);
+
+import { getMessages as getMessages3, getMessages as getMessages4 } from 'messages-modules';
+
+const _getMessagesFunction4 = getMessages4.bind(_messages2);
+
+const _getMessagesFunction3 = getMessages3.bind(_messages2);
+
+const _messages = 'using the same variable name to test collision during injection';
+const getMessagesCopy = _getMessagesFunction;
+console.dir(_getMessagesFunction('en-US'));
+console.dir(_getMessagesFunction2('fr-CA'));
+console.dir(_getMessagesFunction3('fr-CA'));
+console.dir(_getMessagesFunction4('fr-CA'));
+console.dir(getMessagesCopy('en-US'));

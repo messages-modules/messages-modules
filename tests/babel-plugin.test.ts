@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 
-const testAssets = ['./assets/tests/named-import'];
+const testAssets = ['./assets/tests/named-import', './assets/tests/mixed-imports'];
 
 /**
  * Normalize the output of shell commands.
