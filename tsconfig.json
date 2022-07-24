@@ -4,7 +4,8 @@
     "module": "CommonJS",
     "declaration": true,
     "outDir": "lib/",
-    "strict": true
+    "strict": true,
+    "noImplicitThis": false /** required for message injection **/
   },
-  "include": ["src/*.ts"]
+  "include": ["src/**/*.ts", "src/testjs"]
 }

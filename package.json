@@ -16,11 +16,11 @@
   },
   "typesVersions": {
     "*": {
-      "content": [
-        "lib/content/index.d.ts"
+      "babel-plugin": [
+        "lib/babel-plugin/index.d.ts"
       ],
-      "webpack-loader": [
-        "lib/loader/webpack.d.ts"
+      "swc-plugin": [
+        "lib/swc-plugin/index.d.ts"
       ]
     }
   },
@@ -46,9 +46,17 @@
     "internationalization"
   ],
   "devDependencies": {
+    "@babel/cli": "^7.18.9",
+    "@babel/core": "^7.18.9",
+    "@babel/parser": "^7.18.9",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@babel/types": "^7.18.9",
     "@release-it/conventional-changelog": "^5.0.0",
+    "@types/babel__core": "^7.1.19",
     "@types/jest": "^28.1.6",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@types/node": "^18.0.6",
     "@typescript-eslint/parser": "^5.30.7",
     "dotenv-cli": "^6.0.0",
     "eslint": "^8.20.0",
@@ -60,5 +68,8 @@
     "ts-jest": "^28.0.7",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "properties-file": "^2.0.7"
   }
 }
