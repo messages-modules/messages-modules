@@ -13,7 +13,6 @@ export type ImportNamespaceSpecifier = BabelTypes.ImportNamespaceSpecifier;
 export type ImportDefaultSpecifier = BabelTypes.ImportDefaultSpecifier;
 export type Identifier = BabelTypes.Identifier;
 
-const isImportNamespaceSpecifier = BabelTypes.isImportNamespaceSpecifier;
 const isImportSpecifier = BabelTypes.isImportSpecifier;
 
 /**
@@ -157,21 +156,6 @@ function isMatchingNamedImport(nodePath: NodePath, hijackTarget: HijackTarget): 
   );
 }
 
-/**
- * Verify if a namespace import declaration node matches the target module and function.
- *
- * @param nodePath - A node path object.
- * @param hijackTarget - The target to hijack.
- *
- * @returns True is the node matches, otherwise false.
- */
-function isMatchingNamespaceImport(nodePath: NodePath, hijackTarget: HijackTarget): boolean {
-  return (
-    isMatchingModule(nodePath, hijackTarget) &&
-    isImportNamespaceSpecifier((nodePath.node as ImportDeclaration).specifiers[0])
-  );
-}
-
 class Messages {
   /** The program node path associated with the class. */
   private programNodePath: NodePath<Program>;
@@ -269,49 +253,6 @@ function getVariableName(nodePath: NodePath, hijackTarget: HijackTarget, suffix:
 }
 
 /**
- * "Hijack" a namespace (`import * as messages from`) import.
- *
- * This will simply copy the namespace on another function (because namespaces are readonly), and then bind the
- * target function with the injected messages. All bindings of the original namespace will be replaced by the
- * hijacked namespace.
- *
- * @param nodePath - The node path being hijacked.
- * @param hijackTarget - The target to hijack.
- * @param messages - The object used to conditionally inject messages.
- */
-function hijackNamespaceImport(
-  nodePath: NodePath<ImportDeclaration>,
-  hijackTarget: HijackTarget,
-  messages: Messages
-): void {
-  const node = nodePath.node;
-  const specifier = node.specifiers[0];
-  const currentName = specifier.local.name;
-
-  // This is the scope-unique variable name that will replace all matching namespace bindings.
-  const hijackedNamespace = getVariableName(nodePath, hijackTarget, 'Namespace');
-
-  // Rename all bindings with the the new name (this excludes the import declaration).
-  const binding = nodePath.scope.getBinding(currentName);
-
-  if (!binding) {
-    return; // If there is no binding, no need to hijack.
-  }
-
-  binding.referencePaths.forEach((referencePath) => {
-    referencePath.scope.rename(currentName, hijackedNamespace, referencePath.parent);
-  });
-
-  // Insert the new "hijacked" namespace variable, with the correct binding.
-  nodePath.insertAfter(
-    template.ast(
-      `const ${hijackedNamespace} = ${currentName};` +
-        `${hijackedNamespace}.${hijackTarget.function}.bind(${messages.getVariableName()});`
-    ) as Statement
-  );
-}
-
-/**
  * "Hijack" a named import (e.g., `import { useMessages } from`).
  *
  * This will simply bind the named import to the injected messages, on a new function name. All bindings
@@ -379,13 +320,7 @@ export function messageModulePlugin(
 
         (programNodePath.get('body') as NodePath[]).forEach((bodyNodePath) => {
           hijackTargets.forEach((hijackTarget) => {
-            if (isMatchingNamespaceImport(bodyNodePath, hijackTarget)) {
-              hijackNamespaceImport(
-                bodyNodePath as NodePath<ImportDeclaration>,
-                hijackTarget,
-                messages
-              );
-            } else if (isMatchingNamedImport(bodyNodePath, hijackTarget)) {
+            if (isMatchingNamedImport(bodyNodePath, hijackTarget)) {
               hijackNamedImport(
                 bodyNodePath as NodePath<ImportDeclaration>,
                 hijackTarget,
@@ -409,6 +344,7 @@ export function messageModulePlugin(
  * @returns A simple key/value object with the messages.
  */
 export function getMessages(locale: string): KeyValueObject {
+  // @ts-expect-error: `this` is injected using `bind` and will trigger a false compilation error.
   const injectedMessages = this as InjectedMessages;
   if (!injectedMessages || !injectedMessages.isInjected) {
     throw new Error(`a messages-module plugin must be configured`);
