@@ -1,7 +1,7 @@
 # messages-modules
 
 [![License](https://img.shields.io/npm/l/make-coverage-badge.svg)](https://opensource.org/licenses/MIT)
-[![npm download](https://img.shields.io/npm/dw/resolve-accept-language.svg)](https://www.npmjs.com/package/messages-modules)
+[![npm download](https://img.shields.io/npm/dw/messages-modules.svg)](https://www.npmjs.com/package/messages-modules)
 ![Dependencies](https://img.shields.io/badge/dependencies-0-green)
 [![Known Vulnerabilities](https://snyk.io/test/github/Avansai/messages-modules/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Avansai/messages-modules?targetFile=package.json)
 
