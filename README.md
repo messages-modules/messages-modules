@@ -18,7 +18,8 @@ npm install messages-modules
 ## What's in it for me? 🤔
 
 - Modular messages (also known as "localized strings") that work just like [CSS modules](https://github.com/css-modules/css-modules) (no more monolithic files).
-- Build-time plugins for popular compilers ([Babel](https://babeljs.io/) & [SWC](https://swc.rs/)).
+- A build-time plugin generator for [Babel](https://babeljs.io/)
+- The ability to extend to other compilers (e.g., [SWC](https://swc.rs/))
 
 ## Who is this for? 👥
 
@@ -39,15 +40,15 @@ If you are interested to see a mature i18n library using `messages-modules`, che
 In a nutshell, `messages-module` relies on compiler plugins to inject messages automatically to avoid writing a lot of boilerplate code like this:
 
 ```ts
-import enUs from './my-file.en-US.json';
-import frCa from './my-file.fr-CA.json';
+import enUs from './my-file.en-US.json'
+import frCa from './my-file.fr-CA.json'
 // .. imagine 20 other languages (imports) here depending on your project...
 
-import { Messages } from './messages';
+import { Messages } from './messages'
 
-const messages = new Messages([enUs, frCa /** the list goes on... */]);
+const messages = new Messages([enUs, frCa /** the list goes on... */])
 
-console.log(messages.format('en-US', 'greeting'));
+console.log(messages.format('en-US', 'greeting'))
 ```
 
 Now imagine a React application where you have to add this boilerplate code in all your files using messages... And imagine add/removing languages. This is just a disaster waiting to happen.
@@ -55,11 +56,11 @@ Now imagine a React application where you have to add this boilerplate code in a
 What we are proposing instead is this simplified syntax, by injecting messages automatically in the functions you want:
 
 ```ts
-import { getMessages } from './messages';
+import { getMessages } from './messages'
 
-const messages = getMessages();
+const messages = getMessages()
 
-console.log(messages.format('en-US', 'greeting'));
+console.log(messages.format('en-US', 'greeting'))
 ```
 
 To keep this simple, the `message-modules` plugins only support **named imports** which means that **namespace imports**, **dynamic imports** and **require imports** are out of scope:
@@ -67,25 +68,25 @@ To keep this simple, the `message-modules` plugins only support **named imports*
 👍 **named imports**
 
 ```ts
-import { getMessages } from 'messages-modules';
+import { getMessages } from 'messages-modules'
 ```
 
 👎 **namespace imports**
 
 ```ts
-import * as messagesModules from 'messages-modules';
+import * as messagesModules from 'messages-modules'
 ```
 
 👎 **dynamic imports**
 
 ```ts
-const { getMessages } = await import('messages-modules');
+const { getMessages } = await import('messages-modules')
 ```
 
 👎 **require imports**
 
 ```ts
-const messagesModules = require('messages-modules');
+const messagesModules = require('messages-modules')
 ```
 
 ## Why messages modules? 🤷

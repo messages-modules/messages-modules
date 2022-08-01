@@ -1,8 +1,8 @@
-import { propertiesToJson } from 'properties-file';
+import { propertiesToJson } from 'properties-file'
 
-import { HijackTarget, KeyValueObject, messageModulePlugin } from '../';
+import { HijackTarget, KeyValueObject, messageModulePlugin } from '../'
 
-import type { PluginObj } from '@babel/core';
+import type { PluginObj } from '@babel/core'
 
 /**
  * Targets to hijack.
@@ -12,7 +12,7 @@ export const hijackTargets: HijackTarget[] = [
     module: 'messages-modules',
     function: 'getMessages',
   },
-];
+]
 
 /**
  * Get messages from properties file.
@@ -22,7 +22,7 @@ export const hijackTargets: HijackTarget[] = [
  * @returns A "key/value" object storing messages where the key only contains the identifier segment of the key.
  */
 export function getMessages(propertiesFilePath: string): KeyValueObject {
-  return propertiesToJson(propertiesFilePath);
+  return propertiesToJson(propertiesFilePath)
 }
 
 /**
@@ -33,5 +33,5 @@ export function getMessages(propertiesFilePath: string): KeyValueObject {
  * @returns A Babel plugin object.
  */
 export default function plugin(): PluginObj {
-  return messageModulePlugin(hijackTargets, 'properties', getMessages);
+  return messageModulePlugin(hijackTargets, 'properties', getMessages)
 }
