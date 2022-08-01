@@ -1,6 +1,6 @@
-
-
 # [1.0.0](https://github.com/Avansai/messages-modules/compare/0.0.3...1.0.0) (2022-08-01)
+
+Official stable stable release.
 
 ## [0.0.3](https://github.com/Avansai/messages-modules/compare/0.0.2...0.0.3) (2022-07-25)
 
