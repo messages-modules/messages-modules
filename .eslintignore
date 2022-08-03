@@ -4,6 +4,6 @@
 # Compiled roject
 /lib/*
 
-# Jest 
+# Jest
 /coverage
 /assets/tests/*
