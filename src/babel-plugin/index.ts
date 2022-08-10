@@ -9,8 +9,8 @@ import type { PluginObj } from '@babel/core'
  */
 export const hijackTargets: HijackTarget[] = [
   {
-    module: 'messages-modules',
     function: 'getMessages',
+    module: 'messages-modules',
   },
 ]
 

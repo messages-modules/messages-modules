@@ -1,5 +1,5 @@
-import { readdirSync } from 'fs'
-import { parse, sep as pathSeparator } from 'path'
+import { readdirSync } from 'node:fs'
+import { parse, sep as pathSeparator } from 'node:path'
 
 import template from '@babel/template'
 import * as BabelTypes from '@babel/types'
@@ -23,15 +23,24 @@ const isImportSpecifier = BabelTypes.isImportSpecifier
  * @returns An escaped regular expression.
  */
 function escapeRegExp(regexp: string): string {
-  return regexp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+  return regexp.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&') // $& means the whole matched string
 }
 
 /**
- * Target to hijack.
+ * A target to hijack.
+ *
+ * A target to hijack (inject messages) must be identified by both a `function` and the `module` it's being
+ * imported from. For example:
+ *
+ * `import { getMessages } from 'example/intl-messages'`
+ *
+ * The function is `getMessages` and the module is `example/intl-messages`
  */
 export type HijackTarget = {
-  module: string
+  /** The name of a function to hijack (e.g., `getMessages`). */
   function: string
+  /** The function's module used to import it. */
+  module: string
 }
 
 /**
@@ -51,10 +60,10 @@ export type KeyValueObjectCollection = {
 export class InjectedMessages {
   /** This property is used to confirm that the messages have been injected. */
   readonly isInjected = true
-  /** The path of the source file that is invoking `useMessages`. */
-  readonly sourceFilePath: string
   /** A collection of "key/value" objects for for all locales. */
   keyValueObjectCollection: KeyValueObjectCollection = {}
+  /** The path of the source file that is invoking `useMessages`. */
+  readonly sourceFilePath: string
 
   /**
    * The injected localized messages.
@@ -95,9 +104,10 @@ function getInjectedMessages(
       const regExpMatch = directoryEntryFilename.match(fileRegExp)
       if (regExpMatch?.groups) {
         const locale = regExpMatch.groups.locale
-        const messagesFilePath = sourceFileDirectoryPath.length
-          ? `${sourceFileDirectoryPath}/${directoryEntryFilename}`
-          : directoryEntryFilename
+        const messagesFilePath =
+          sourceFileDirectoryPath.length > 0
+            ? `${sourceFileDirectoryPath}/${directoryEntryFilename}`
+            : directoryEntryFilename
         injectedMessages.keyValueObjectCollection[locale.toLowerCase()] =
           getMessages(messagesFilePath)
       }
@@ -157,17 +167,16 @@ function isMatchingNamedImport(nodePath: NodePath, hijackTarget: HijackTarget): 
 }
 
 class Messages {
+  /** The function used to get the messages. */
+  private getMessages: (messagesFilePath: string) => KeyValueObject
+  /** The number of time the `getVariableName` was called. */
+  private getVariableNameCount = 0
+  /** The file extension of the messages file. */
+  private messagesFileExtension: string
   /** The program node path associated with the class. */
   private programNodePath: NodePath<Program>
   /** The source file path associated with the class. */
   private sourceFilePath: string
-  /** The file extension of the messages file. */
-  private messagesFileExtension: string
-  /** The function used to get the messages. */
-  private getMessages: (messagesFilePath: string) => KeyValueObject
-
-  /** The number of time the `getVariableName` was called. */
-  private getVariableNameCount = 0
   /** The unique variable name used relative to the program node path. */
   private variableName: string
 
@@ -345,6 +354,5 @@ export function getMessages(locale: string): KeyValueObject {
   if (!injectedMessages || !injectedMessages.isInjected) {
     throw new Error(`a messages-module plugin must be configured`)
   }
-  const messages = injectedMessages.keyValueObjectCollection[locale.toLowerCase()]
-  return !messages ? {} : messages
+  return injectedMessages.keyValueObjectCollection[locale.toLowerCase()] ?? {}
 }
