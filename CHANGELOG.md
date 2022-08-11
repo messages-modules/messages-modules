@@ -1,3 +1,12 @@
+
+
+## [1.1.1](https://github.com/Avansai/messages-modules/compare/1.1.0...1.1.1) (2022-08-11)
+
+
+### Bug Fixes
+
+* fix Babel scope tracker errors ([1400526](https://github.com/Avansai/messages-modules/commit/1400526e5c80e67b442845ecfdb538dcaf6afe31))
+
 # [1.1.0](https://github.com/Avansai/messages-modules/compare/1.0.0...1.1.0) (2022-08-11)
 
 ### Code Refactoring
