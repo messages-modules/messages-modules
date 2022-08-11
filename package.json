@@ -21,8 +21,7 @@
     }
   },
   "scripts": {
-    "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc && npm test",
-    "build2": "rm -Rf ./lib && tsc",
+    "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc && npm run test",
     "lint-fix": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx --fix .",
     "lint-check": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx .",
     "lint-print-config": "eslint --print-config ./eslintrc.yaml",
