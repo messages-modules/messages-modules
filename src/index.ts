@@ -329,10 +329,11 @@ function hijackNamedImport(
 
   node.specifiers.forEach((specifier) => {
     if (isImportSpecifier(specifier) && isMatchingImportFunction(specifier, hijackTarget)) {
+      // The current function name used in the local scope.
+      const currentName = specifier.local.name
+
       // This is the scope-unique variable name that will replace all matching function bindings.
       const hijackedFunction = getVariableName(nodePath, hijackTarget, 'Function')
-
-      const currentName = specifier.local.name
 
       // Rename all bindings with the the new name (this excludes the import declaration).
       const binding = nodePath.scope.getBinding(currentName)
@@ -358,8 +359,9 @@ function hijackNamedImport(
 /**
  * "Hijack" a named export (e.g., `export { useMessages } from`).
  *
- * This will simply bind the named import to the injected messages, on a new function name. All bindings
- * of the original function will replaced by the hijacked function.
+ * For every named export, we will create an import statement to which we will create a new hijacked function
+ * that will then be re-exported using the original name. If all named exports of a statement are hijacked, the
+ * export statement will be removed.
  *
  * @param nodePath - The node path being hijacked.
  * @param hijackTarget - The target to hijack.
@@ -381,13 +383,14 @@ function hijackNamedExport(
       // Remove the matching specifier from the export as we will hijack it.
       node.specifiers.splice(specifiersCopy.length - 1 - index, 1)
 
-      // This is the scope-unique variable name that will replace all matching function bindings.
+      // The current function name used when exporting.
+      const currentName = specifier.exported.name
+
+      // This is the scope-unique variable name that will be used to perform the hijack.
       const hijackedImport = getVariableName(nodePath, hijackTarget, 'Function')
       const hijackedExport = getVariableName(nodePath, hijackTarget, 'Function')
 
-      const currentName = specifier.exported.name
-
-      // Insert the new "hijacked" namespace variable, with the correct binding.
+      // Insert new import/exports statement using the new "hijacked" variable, with the correct binding.
       nodePath.insertAfter(
         template.ast(
           `import { ${hijackTarget.function} as ${hijackedImport} } from '${hijackTarget.module}';` +
@@ -398,7 +401,7 @@ function hijackNamedExport(
     }
   })
 
-  // If the entire export statement was hijacked (it is not empty), we can remove it.
+  // If the entire export statement was hijacked (it is now empty), we can remove it.
   if (node.specifiers.length === 0) {
     nodePath.remove()
   }
