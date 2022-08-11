@@ -63,29 +63,25 @@ const messages = getMessages()
 console.log(messages.format('en-US', 'greeting'))
 ```
 
-To keep this simple, the `message-modules` plugins only support **named imports** which means that **namespace imports**, **dynamic imports** and **require imports** are out of scope:
+To keep this simple, the `message-modules` plugins only support **named imports** and **named exports**. This means that **namespace imports**, **dynamic imports** and **require imports** are out of scope:
 
-👍 **named imports**
+👍 **Supported**
 
 ```ts
+// Named import
 import { getMessages } from 'messages-modules'
+// Named export (used for shared messages)
+export { getMessages } from 'messages-modules'
 ```
 
-👎 **namespace imports**
+👎 **Unsupported**
 
 ```ts
+// Namespace import
 import * as messagesModules from 'messages-modules'
-```
-
-👎 **dynamic imports**
-
-```ts
+// Dynamic imports
 const { getMessages } = await import('messages-modules')
-```
-
-👎 **require imports**
-
-```ts
+// Require imports
 const messagesModules = require('messages-modules')
 ```
 

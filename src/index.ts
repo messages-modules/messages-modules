@@ -5,15 +5,22 @@ import template from '@babel/template'
 import * as BabelTypes from '@babel/types'
 
 import type { NodePath, PluginObj, PluginPass } from '@babel/core'
+
 export type Program = BabelTypes.Program
 export type Statement = BabelTypes.Statement
+export type ExportNamedDeclaration = BabelTypes.ExportNamedDeclaration
+export type ExportSpecifier = BabelTypes.ExportSpecifier
+export type ExportNamespaceSpecifier = BabelTypes.ExportNamespaceSpecifier
+export type ExportDefaultSpecifier = BabelTypes.ExportDefaultSpecifier
 export type ImportDeclaration = BabelTypes.ImportDeclaration
 export type ImportSpecifier = BabelTypes.ImportSpecifier
 export type ImportNamespaceSpecifier = BabelTypes.ImportNamespaceSpecifier
 export type ImportDefaultSpecifier = BabelTypes.ImportDefaultSpecifier
 export type Identifier = BabelTypes.Identifier
 
+const isExportSpecifier = BabelTypes.isExportSpecifier
 const isImportSpecifier = BabelTypes.isImportSpecifier
+const isIdentifier = BabelTypes.isIdentifier
 
 /**
  * Escapes a regular expression string.
@@ -32,9 +39,9 @@ function escapeRegExp(regexp: string): string {
  * A target to hijack (inject messages) must be identified by both a `function` and the `module` it's being
  * imported from. For example:
  *
- * `import { getMessages } from 'example/intl-messages'`
+ * `import { getMessages } from 'messages-modules'`
  *
- * The function is `getMessages` and the module is `example/intl-messages`
+ * The function is `getMessages` and the module is `messages-modules`
  */
 export type HijackTarget = {
   /** The name of a function to hijack (e.g., `getMessages`). */
@@ -118,34 +125,77 @@ function getInjectedMessages(
 }
 
 /**
- * Verify if an import declaration node matches the target module.
+ * Verify if an import or export statement matches the target module.
+ *
+ * @param nodePath - A node path object.
+ * @param hijackTarget - The target to hijack.
+ *
+ * @returns True is the module matches, otherwise false.
+ */
+function isMatchingModule(
+  nodePath: NodePath<BabelTypes.ImportDeclaration> | NodePath<BabelTypes.ExportNamedDeclaration>,
+  hijackTarget: HijackTarget
+): boolean {
+  return !!nodePath.node.source && nodePath.node.source.value === hijackTarget.module
+}
+
+/**
+ * Verify if an import or export statement matches the target function.
+ *
+ * @param nodePath - A node path object.
+ * @param hijackTarget - The target to hijack.
+ *
+ * @returns True is the function matches, otherwise false.
+ */
+function isMatchingFunction(
+  nodePath: NodePath<ImportDeclaration> | NodePath<ExportNamedDeclaration>,
+  hijackTarget: HijackTarget
+): boolean {
+  return nodePath.node.specifiers.some((specifier) => {
+    return (
+      (isImportSpecifier(specifier) && isMatchingImportFunction(specifier, hijackTarget)) ||
+      (isExportSpecifier(specifier) && isMatchingExportFunction(specifier, hijackTarget))
+    )
+  })
+}
+
+/**
+ * Verify if an import specifier matches the target function.
+ *
+ * @param specifier - An import specifier object.
+ * @param hijackTarget - The target to hijack.
+ *
+ * @returns True is the module matches, otherwise false.
+ */
+function isMatchingImportFunction(specifier: ImportSpecifier, hijackTarget: HijackTarget): boolean {
+  return isIdentifier(specifier.imported) && specifier.imported.name === hijackTarget.function
+}
+
+/**
+ * Verify if an export specifier matches the target function.
+ *
+ * @param specifier - An export specifier object.
+ * @param hijackTarget - The target to hijack.
+ *
+ * @returns True is the module matches, otherwise false.
+ */
+function isMatchingExportFunction(specifier: ExportSpecifier, hijackTarget: HijackTarget): boolean {
+  return isIdentifier(specifier.local) && specifier.local.name === hijackTarget.function
+}
+
+/**
+ * Verify if a named export declaration node matches the target module and function.
  *
  * @param nodePath - A node path object.
  * @param hijackTarget - The target to hijack.
  *
  * @returns True is the node matches, otherwise false.
  */
-function isMatchingModule(nodePath: NodePath, hijackTarget: HijackTarget): boolean {
-  if (!nodePath.isImportDeclaration()) return false
-  if (nodePath.node.source.value !== hijackTarget.module) return false
-  return true
-}
-
-/**
- * Verify if a specifier matches the target function.
- *
- * @param specifier - A specifier object.
- * @param hijackTarget - The target to hijack.
- *
- * @returns True is the specifier matches, otherwise false.
- */
-function isMatchingModuleImportName(
-  specifier: ImportDefaultSpecifier | ImportNamespaceSpecifier | ImportSpecifier,
-  hijackTarget: HijackTarget
-): boolean {
+function isMatchingNamedExport(nodePath: NodePath, hijackTarget: HijackTarget): boolean {
   return (
-    isImportSpecifier(specifier) &&
-    (specifier.imported as Identifier).name === hijackTarget.function
+    nodePath.isExportNamedDeclaration() &&
+    isMatchingFunction(nodePath, hijackTarget) &&
+    isMatchingModule(nodePath, hijackTarget)
   )
 }
 
@@ -159,10 +209,9 @@ function isMatchingModuleImportName(
  */
 function isMatchingNamedImport(nodePath: NodePath, hijackTarget: HijackTarget): boolean {
   return (
-    isMatchingModule(nodePath, hijackTarget) &&
-    (nodePath.node as ImportDeclaration).specifiers.some((specifier) =>
-      isMatchingModuleImportName(specifier, hijackTarget)
-    )
+    nodePath.isImportDeclaration() &&
+    isMatchingFunction(nodePath, hijackTarget) &&
+    isMatchingModule(nodePath, hijackTarget)
   )
 }
 
@@ -279,7 +328,7 @@ function hijackNamedImport(
   const node = nodePath.node
 
   node.specifiers.forEach((specifier) => {
-    if (isMatchingModuleImportName(specifier, hijackTarget)) {
+    if (isImportSpecifier(specifier) && isMatchingImportFunction(specifier, hijackTarget)) {
       // This is the scope-unique variable name that will replace all matching function bindings.
       const hijackedFunction = getVariableName(nodePath, hijackTarget, 'Function')
 
@@ -289,14 +338,14 @@ function hijackNamedImport(
       const binding = nodePath.scope.getBinding(currentName)
 
       if (!binding) {
-        return // If there is no binding, no need to hijack.
+        return // If the function is unused (no binding), no need to hijack.
       }
 
       binding.referencePaths.forEach((referencePath) => {
         referencePath.scope.rename(currentName, hijackedFunction, referencePath.parent)
       })
 
-      // Insert the new "hijacked" namespace variable, with the correct binding.
+      // Insert the new "hijacked" variable, with the correct binding.
       nodePath.insertAfter(
         template.ast(
           `const ${hijackedFunction} = ${currentName}.bind(${messages.getVariableName()});`
@@ -304,6 +353,55 @@ function hijackNamedImport(
       )
     }
   })
+}
+
+/**
+ * "Hijack" a named export (e.g., `export { useMessages } from`).
+ *
+ * This will simply bind the named import to the injected messages, on a new function name. All bindings
+ * of the original function will replaced by the hijacked function.
+ *
+ * @param nodePath - The node path being hijacked.
+ * @param hijackTarget - The target to hijack.
+ * @param messages - The object used to conditionally inject messages.
+ */
+function hijackNamedExport(
+  nodePath: NodePath<ExportNamedDeclaration>,
+  hijackTarget: HijackTarget,
+  messages: Messages
+): void {
+  const node = nodePath.node
+
+  ;[...node.specifiers].reverse().forEach((specifier, index, specifiersCopy) => {
+    if (
+      isExportSpecifier(specifier) &&
+      isMatchingExportFunction(specifier, hijackTarget) &&
+      isIdentifier(specifier.exported)
+    ) {
+      // Remove the matching specifier from the export as we will hijack it.
+      node.specifiers.splice(specifiersCopy.length - 1 - index, 1)
+
+      // This is the scope-unique variable name that will replace all matching function bindings.
+      const hijackedImport = getVariableName(nodePath, hijackTarget, 'Function')
+      const hijackedExport = getVariableName(nodePath, hijackTarget, 'Function')
+
+      const currentName = specifier.exported.name
+
+      // Insert the new "hijacked" namespace variable, with the correct binding.
+      nodePath.insertAfter(
+        template.ast(
+          `import { ${hijackTarget.function} as ${hijackedImport} } from '${hijackTarget.module}';` +
+            `const ${hijackedExport} = ${hijackedImport}.bind(${messages.getVariableName()});` +
+            `export { ${hijackedExport} as ${currentName} };`
+        ) as Statement
+      )
+    }
+  })
+
+  // If the entire export statement was hijacked (it is not empty), we can remove it.
+  if (node.specifiers.length === 0) {
+    nodePath.remove()
+  }
 }
 
 /**
@@ -329,8 +427,17 @@ export function messageModulePlugin(
 
         ;(programNodePath.get('body') as NodePath[]).forEach((bodyNodePath) => {
           hijackTargets.forEach((hijackTarget) => {
+            // Try to hijack matching named import statements.
             if (isMatchingNamedImport(bodyNodePath, hijackTarget)) {
               hijackNamedImport(bodyNodePath as NodePath<ImportDeclaration>, hijackTarget, messages)
+            }
+            // Try to hijack matching named export statements.
+            if (isMatchingNamedExport(bodyNodePath, hijackTarget)) {
+              hijackNamedExport(
+                bodyNodePath as NodePath<ExportNamedDeclaration>,
+                hijackTarget,
+                messages
+              )
             }
           })
         })
