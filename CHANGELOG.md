@@ -1,21 +1,16 @@
-
-
 # [1.1.0](https://github.com/Avansai/messages-modules/compare/1.0.0...1.1.0) (2022-08-11)
-
 
 ### Code Refactoring
 
-* add `eslint-plugin-unicorn` to help increase code quality ([41643ae](https://github.com/Avansai/messages-modules/commit/41643aef87910bd4785925260c44e6615a73716a))
-
+- add `eslint-plugin-unicorn` to help increase code quality ([41643ae](https://github.com/Avansai/messages-modules/commit/41643aef87910bd4785925260c44e6615a73716a))
 
 ### Features
 
-* add named export support for shared messages ([630f1c1](https://github.com/Avansai/messages-modules/commit/630f1c12edd27682508a97695e18bf7934145727))
-
+- add named export support for shared messages ([630f1c1](https://github.com/Avansai/messages-modules/commit/630f1c12edd27682508a97695e18bf7934145727))
 
 ### BREAKING CHANGES
 
-* Using the `node:` scheme to better identify Node.js modules requires more recent Node.js versions
+- Using the `node:` scheme to better identify Node.js modules requires more recent Node.js versions
 
 # [1.0.0](https://github.com/Avansai/messages-modules/compare/0.0.3...1.0.0) (2022-08-01)
 
