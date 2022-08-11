@@ -391,13 +391,23 @@ function hijackNamedExport(
       const hijackedExport = getVariableName(nodePath, hijackTarget, 'Function')
 
       // Insert new import/exports statement using the new "hijacked" variable, with the correct binding.
-      nodePath.insertAfter(
-        template.ast(
-          `import { ${hijackTarget.function} as ${hijackedImport} } from '${hijackTarget.module}';` +
-            `const ${hijackedExport} = ${hijackedImport}.bind(${messages.getVariableName()});` +
-            `export { ${hijackedExport} as ${currentName} };`
-        ) as Statement
-      )
+      const importStatement = template.ast(
+        `import { ${hijackTarget.function} as ${hijackedImport} } from '${hijackTarget.module}';`
+      ) as Statement
+      const hijackStatement = template.ast(
+        `const ${hijackedExport} = ${hijackedImport}.bind(${messages.getVariableName()});`
+      ) as Statement
+      const exportStatement = template.ast(
+        `export { ${hijackedExport} as ${currentName} };`
+      ) as Statement
+
+      const [importDeclaration] = nodePath.insertAfter([
+        importStatement,
+        hijackStatement,
+        exportStatement,
+      ])
+      // Register the import statement to avoid Babel's scope tracker errors.
+      nodePath.scope.registerDeclaration(importDeclaration)
     }
   })
 
