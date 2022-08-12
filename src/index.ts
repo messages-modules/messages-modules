@@ -390,24 +390,35 @@ function hijackNamedExport(
       const hijackedImport = getVariableName(nodePath, hijackTarget, 'Function')
       const hijackedExport = getVariableName(nodePath, hijackTarget, 'Function')
 
-      // Insert new import/exports statement using the new "hijacked" variable, with the correct binding.
+      /**
+       * Start by inserting a new `require` statement to import the function under a new unique "hijacked" name.
+       *
+       * ⚠️ Note: when trying to use `import` instead of `require`, it caused unexpected Next.js compilation issues:
+       *
+       * `error - ReferenceError: _useMessagesFunction is not defined`
+       */
       const importStatement = template.ast(
-        `import { ${hijackTarget.function} as ${hijackedImport} } from '${hijackTarget.module}';`
+        `const { ${hijackTarget.function}: ${hijackedImport} } = require('${hijackTarget.module}');`
       ) as Statement
+      const [importStatementPath] = nodePath.insertAfter(importStatement)
+      nodePath.parentPath.scope.registerDeclaration(importStatementPath)
+
+      // Insert a new unique variable that will be used to export the messages.
       const hijackStatement = template.ast(
         `const ${hijackedExport} = ${hijackedImport}.bind(${messages.getVariableName()});`
       ) as Statement
+
+      const [hijackStatementPath] = importStatementPath.insertAfter(hijackStatement)
+      // ⚠️ Registering this specific declaration seems to avoid Next.js warnings on startup.
+      nodePath.parentPath.scope.registerDeclaration(hijackStatementPath)
+
+      // Insert the new export statement using the "hijacked" export name.
       const exportStatement = template.ast(
         `export { ${hijackedExport} as ${currentName} };`
       ) as Statement
 
-      const [importDeclaration] = nodePath.insertAfter([
-        importStatement,
-        hijackStatement,
-        exportStatement,
-      ])
-      // Register the import statement to avoid Babel's scope tracker errors.
-      nodePath.scope.registerDeclaration(importDeclaration)
+      const [exportStatementPath] = hijackStatementPath.insertAfter(exportStatement)
+      nodePath.scope.registerDeclaration(exportStatementPath)
     }
   })
 
