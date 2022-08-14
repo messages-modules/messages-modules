@@ -1,11 +1,8 @@
-
-
 ## [1.1.2](https://github.com/Avansai/messages-modules/compare/1.1.1...1.1.2) (2022-08-12)
-
 
 ### Bug Fixes
 
-* fix Next.js `ReferenceError` compile errors ([a1a9d9d](https://github.com/Avansai/messages-modules/commit/a1a9d9dae5b1308d97b6c0ee2d499ade2776785f))
+- fix Next.js `ReferenceError` compile errors ([a1a9d9d](https://github.com/Avansai/messages-modules/commit/a1a9d9dae5b1308d97b6c0ee2d499ade2776785f))
 
 ## [1.1.1](https://github.com/Avansai/messages-modules/compare/1.1.0...1.1.1) (2022-08-11)
 
