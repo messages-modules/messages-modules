@@ -1,3 +1,13 @@
+
+
+## [1.1.3](https://github.com/Avansai/messages-modules/compare/1.1.2...1.1.3) (2022-08-14)
+
+
+### Bug Fixes
+
+* add missing ESLint `plugin:import/typescript` ([2a07d1c](https://github.com/Avansai/messages-modules/commit/2a07d1ca74531dd35edd198117264ae2be851429))
+* remove overly intrusive ESLint rules ([e298a9e](https://github.com/Avansai/messages-modules/commit/e298a9e845fbeb44ee00b54fc58b742f796a4ff8))
+
 ## [1.1.2](https://github.com/Avansai/messages-modules/compare/1.1.1...1.1.2) (2022-08-12)
 
 ### Bug Fixes
