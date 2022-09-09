@@ -1,6 +1,6 @@
 {
   "name": "messages-modules",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Messages (localized strings) that are scoped locally.",
   "author": "Avansai (https://avansai.com)",
   "repository": {
