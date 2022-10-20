@@ -1,3 +1,9 @@
+## [1.1.15](https://github.com/Avansai/messages-modules/compare/1.1.14...1.1.15) (2022-10-20)
+
+### Bug Fixes
+
+- fix issue where using message functions in arrays would cause name collision ([c9dfa2c](https://github.com/Avansai/messages-modules/commit/c9dfa2c50d47fa84215b8818f48022edda071619))
+
 ## [1.1.14](https://github.com/Avansai/messages-modules/compare/1.1.13...1.1.14) (2022-10-16)
 
 ## [1.1.13](https://github.com/Avansai/messages-modules/compare/1.1.12...1.1.13) (2022-10-09)
