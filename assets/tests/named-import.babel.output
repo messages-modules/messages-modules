@@ -12,23 +12,18 @@ const _messages2 = {
 };
 // @ts-nocheck
 import { getMessages } from 'messages-modules';
-
 const _getMessagesFunction = getMessages.bind(_messages2);
-
 import { getMessages as getMessages2 } from 'messages-modules';
-
 const _getMessagesFunction2 = getMessages2.bind(_messages2);
-
 import { getMessages as getMessages3, someFunction, getMessages as getMessages4 } from 'messages-modules';
-
 const _getMessagesFunction4 = getMessages4.bind(_messages2);
-
 const _getMessagesFunction3 = getMessages3.bind(_messages2);
-
 const _messages = 'using the same variable name used to inject message to test collisions';
 console.dir(_messages);
 someFunction(true);
 const getMessagesCopy = _getMessagesFunction;
+const getMessagesArray = [_getMessagesFunction, _getMessagesFunction, _getMessagesFunction];
+console.dir(getMessagesArray);
 console.dir(_getMessagesFunction('en-US'));
 console.dir(_getMessagesFunction2('fr-CA'));
 console.dir(_getMessagesFunction3('fr-CA'));

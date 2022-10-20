@@ -11,67 +11,49 @@ const _messages = {
   "sourceFilePath": "assets/tests/named-export.ts"
 };
 // @ts-nocheck
+
 // Test 1: Exporting an import (this is not using the "name export" hijack)
 import { getMessages } from 'messages-modules';
-
 const _getMessagesFunction = getMessages.bind(_messages);
+export const sharedMessages = _getMessagesFunction;
 
-export const sharedMessages = _getMessagesFunction; // Test 2: Exporting a "named export" that has the same name as the import
-
+// Test 2: Exporting a "named export" that has the same name as the import
 const {
   getMessages: _getMessagesFunction2
 } = require('messages-modules');
-
 const _getMessagesFunction3 = _getMessagesFunction2.bind(_messages);
-
 export { _getMessagesFunction3 as getMessages };
-
 const {
   getMessages: _getMessagesFunction4
 } = require('messages-modules');
-
 const _getMessagesFunction5 = _getMessagesFunction4.bind(_messages);
-
 export { _getMessagesFunction5 as getMessages2 };
 // Test 4: Multiple named export, with only 1 left not being hijacked (export statement should remain for 1)
-export { someOtherFunction } from 'messages-modules'; // Test 5: Multiple named export, all being hijacked (export statement should be deleted)
+export { someOtherFunction } from 'messages-modules';
 
+// Test 5: Multiple named export, all being hijacked (export statement should be deleted)
 const {
   getMessages: _getMessagesFunction8
 } = require('messages-modules');
-
 const _getMessagesFunction9 = _getMessagesFunction8.bind(_messages);
-
 export { _getMessagesFunction9 as getMessages3 };
-
 const {
   getMessages: _getMessagesFunction6
 } = require('messages-modules');
-
 const _getMessagesFunction7 = _getMessagesFunction6.bind(_messages);
-
 export { _getMessagesFunction7 as getMessages4 };
-
 const {
   getMessages: _getMessagesFunction14
 } = require('messages-modules');
-
 const _getMessagesFunction15 = _getMessagesFunction14.bind(_messages);
-
 export { _getMessagesFunction15 as getMessages5 };
-
 const {
   getMessages: _getMessagesFunction12
 } = require('messages-modules');
-
 const _getMessagesFunction13 = _getMessagesFunction12.bind(_messages);
-
 export { _getMessagesFunction13 as getMessages6 };
-
 const {
   getMessages: _getMessagesFunction10
 } = require('messages-modules');
-
 const _getMessagesFunction11 = _getMessagesFunction10.bind(_messages);
-
 export { _getMessagesFunction11 as getMessages7 };

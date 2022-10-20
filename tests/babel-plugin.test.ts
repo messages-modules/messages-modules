@@ -10,7 +10,7 @@ const testAssets = ['./assets/tests/named-import', './assets/tests/named-export'
  *
  * @returns The normalized output of a shell command.
  */
-function normalizeCommandOutput(output: string | Buffer): string {
+const normalizeCommandOutput = (output: string | Buffer): string => {
   const normalizedOutput = Buffer.isBuffer(output) ? output.toString() : output
   return normalizedOutput.trim().replace(new RegExp('\\r\\n', 'g'), '\n')
 }

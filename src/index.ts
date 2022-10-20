@@ -29,9 +29,7 @@ const isIdentifier = BabelTypes.isIdentifier
  *
  * @returns An escaped regular expression.
  */
-function escapeRegExp(regexp: string): string {
-  return regexp.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&') // $& means the whole matched string
-}
+const escapeRegExp = (regexp: string): string => regexp.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&')
 
 /**
  * A target to hijack.
@@ -91,11 +89,11 @@ export class InjectedMessages {
  *
  * @returns The injected multilingual messages collection in string format.
  */
-function getInjectedMessages(
+const getInjectedMessages = (
   sourceFilePath: string,
   messagesFileExtension: string,
   getMessages: (messagesFilePath: string) => KeyValueObject
-): string {
+): string => {
   const parsedSourceFile = parse(sourceFilePath)
   const sourceFileDirectoryPath = parsedSourceFile.dir
   const sourceFilename = parsedSourceFile.name
@@ -132,12 +130,10 @@ function getInjectedMessages(
  *
  * @returns True is the module matches, otherwise false.
  */
-function isMatchingModule(
+const isMatchingModule = (
   nodePath: NodePath<BabelTypes.ImportDeclaration> | NodePath<BabelTypes.ExportNamedDeclaration>,
   hijackTarget: HijackTarget
-): boolean {
-  return !!nodePath.node.source && nodePath.node.source.value === hijackTarget.module
-}
+): boolean => !!nodePath.node.source && nodePath.node.source.value === hijackTarget.module
 
 /**
  * Verify if an import or export statement matches the target function.
@@ -147,17 +143,16 @@ function isMatchingModule(
  *
  * @returns True is the function matches, otherwise false.
  */
-function isMatchingFunction(
+const isMatchingFunction = (
   nodePath: NodePath<ImportDeclaration> | NodePath<ExportNamedDeclaration>,
   hijackTarget: HijackTarget
-): boolean {
-  return nodePath.node.specifiers.some((specifier) => {
+): boolean =>
+  nodePath.node.specifiers.some((specifier) => {
     return (
       (isImportSpecifier(specifier) && isMatchingImportFunction(specifier, hijackTarget)) ||
       (isExportSpecifier(specifier) && isMatchingExportFunction(specifier, hijackTarget))
     )
   })
-}
 
 /**
  * Verify if an import specifier matches the target function.
@@ -167,9 +162,10 @@ function isMatchingFunction(
  *
  * @returns True is the module matches, otherwise false.
  */
-function isMatchingImportFunction(specifier: ImportSpecifier, hijackTarget: HijackTarget): boolean {
-  return isIdentifier(specifier.imported) && specifier.imported.name === hijackTarget.function
-}
+const isMatchingImportFunction = (
+  specifier: ImportSpecifier,
+  hijackTarget: HijackTarget
+): boolean => isIdentifier(specifier.imported) && specifier.imported.name === hijackTarget.function
 
 /**
  * Verify if an export specifier matches the target function.
@@ -179,9 +175,10 @@ function isMatchingImportFunction(specifier: ImportSpecifier, hijackTarget: Hija
  *
  * @returns True is the module matches, otherwise false.
  */
-function isMatchingExportFunction(specifier: ExportSpecifier, hijackTarget: HijackTarget): boolean {
-  return isIdentifier(specifier.local) && specifier.local.name === hijackTarget.function
-}
+const isMatchingExportFunction = (
+  specifier: ExportSpecifier,
+  hijackTarget: HijackTarget
+): boolean => isIdentifier(specifier.local) && specifier.local.name === hijackTarget.function
 
 /**
  * Verify if a named export declaration node matches the target module and function.
@@ -191,13 +188,10 @@ function isMatchingExportFunction(specifier: ExportSpecifier, hijackTarget: Hija
  *
  * @returns True is the node matches, otherwise false.
  */
-function isMatchingNamedExport(nodePath: NodePath, hijackTarget: HijackTarget): boolean {
-  return (
-    nodePath.isExportNamedDeclaration() &&
-    isMatchingFunction(nodePath, hijackTarget) &&
-    isMatchingModule(nodePath, hijackTarget)
-  )
-}
+const isMatchingNamedExport = (nodePath: NodePath, hijackTarget: HijackTarget): boolean =>
+  nodePath.isExportNamedDeclaration() &&
+  isMatchingFunction(nodePath, hijackTarget) &&
+  isMatchingModule(nodePath, hijackTarget)
 
 /**
  * Verify if an import declaration node matches the target module and function.
@@ -207,13 +201,10 @@ function isMatchingNamedExport(nodePath: NodePath, hijackTarget: HijackTarget): 
  *
  * @returns True is the node matches, otherwise false.
  */
-function isMatchingNamedImport(nodePath: NodePath, hijackTarget: HijackTarget): boolean {
-  return (
-    nodePath.isImportDeclaration() &&
-    isMatchingFunction(nodePath, hijackTarget) &&
-    isMatchingModule(nodePath, hijackTarget)
-  )
-}
+const isMatchingNamedImport = (nodePath: NodePath, hijackTarget: HijackTarget): boolean =>
+  nodePath.isImportDeclaration() &&
+  isMatchingFunction(nodePath, hijackTarget) &&
+  isMatchingModule(nodePath, hijackTarget)
 
 class Messages {
   /** The function used to get the messages. */
@@ -306,9 +297,8 @@ class Messages {
  *
  * @returns A unique variable name in the node path's scope.
  */
-function getVariableName(nodePath: NodePath, hijackTarget: HijackTarget, suffix: string): string {
-  return nodePath.scope.generateUidIdentifier(`${hijackTarget.function}${suffix}`).name
-}
+const getVariableName = (nodePath: NodePath, hijackTarget: HijackTarget, suffix: string): string =>
+  nodePath.scope.generateUidIdentifier(`${hijackTarget.function}${suffix}`).name
 
 /**
  * "Hijack" a named import (e.g., `import { useMessages } from`).
@@ -320,11 +310,11 @@ function getVariableName(nodePath: NodePath, hijackTarget: HijackTarget, suffix:
  * @param hijackTarget - The target to hijack.
  * @param messages - The object used to conditionally inject messages.
  */
-function hijackNamedImport(
+const hijackNamedImport = (
   nodePath: NodePath<ImportDeclaration>,
   hijackTarget: HijackTarget,
   messages: Messages
-): void {
+): void => {
   const node = nodePath.node
 
   node.specifiers.forEach((specifier) => {
@@ -343,7 +333,10 @@ function hijackNamedImport(
       }
 
       binding.referencePaths.forEach((referencePath) => {
-        referencePath.scope.rename(currentName, hijackedFunction, referencePath.parent)
+        // We used `scope.rename` before but is caused conflicts between array expressions and import statements.
+        if (referencePath.isIdentifier()) {
+          referencePath.node.name = hijackedFunction
+        }
       })
 
       // Insert the new "hijacked" variable, with the correct binding.
@@ -367,11 +360,11 @@ function hijackNamedImport(
  * @param hijackTarget - The target to hijack.
  * @param messages - The object used to conditionally inject messages.
  */
-function hijackNamedExport(
+const hijackNamedExport = (
   nodePath: NodePath<ExportNamedDeclaration>,
   hijackTarget: HijackTarget,
   messages: Messages
-): void {
+): void => {
   const node = nodePath.node
 
   ;[...node.specifiers].reverse().forEach((specifier, index, specifiersCopy) => {
@@ -434,43 +427,38 @@ function hijackNamedExport(
  * @param messagesFileExtension - The file extension of the messages file.
  * @param getMessages - The function used to get the messages.
  *  */
-export function messageModulePlugin(
+export const messageModulePlugin = (
   hijackTargets: HijackTarget[],
   messagesFileExtension: string,
   getMessages: (messagesFilePath: string) => KeyValueObject
-): PluginObj {
-  return {
-    visitor: {
-      Program(programNodePath: NodePath<Program>, pluginPass: PluginPass) {
-        const messages = new Messages(
-          programNodePath,
-          pluginPass,
-          messagesFileExtension,
-          getMessages
-        )
+): PluginObj => ({
+  visitor: {
+    Program: (programNodePath: NodePath<Program>, pluginPass: PluginPass) => {
+      const messages = new Messages(programNodePath, pluginPass, messagesFileExtension, getMessages)
 
-        ;(programNodePath.get('body') as NodePath[]).forEach((bodyNodePath) => {
-          hijackTargets.forEach((hijackTarget) => {
-            // Try to hijack matching named import statements.
-            if (isMatchingNamedImport(bodyNodePath, hijackTarget)) {
-              hijackNamedImport(bodyNodePath as NodePath<ImportDeclaration>, hijackTarget, messages)
-            }
-            // Try to hijack matching named export statements.
-            if (isMatchingNamedExport(bodyNodePath, hijackTarget)) {
-              hijackNamedExport(
-                bodyNodePath as NodePath<ExportNamedDeclaration>,
-                hijackTarget,
-                messages
-              )
-            }
-          })
+      void (programNodePath.get('body') as NodePath[]).forEach((bodyNodePath) => {
+        hijackTargets.forEach((hijackTarget) => {
+          // Try to hijack matching named import statements.
+          if (isMatchingNamedImport(bodyNodePath, hijackTarget)) {
+            // console.log('----------')
+            // console.dir(bodyNodePath)
+            hijackNamedImport(bodyNodePath as NodePath<ImportDeclaration>, hijackTarget, messages)
+          }
+          // Try to hijack matching named export statements.
+          if (isMatchingNamedExport(bodyNodePath, hijackTarget)) {
+            hijackNamedExport(
+              bodyNodePath as NodePath<ExportNamedDeclaration>,
+              hijackTarget,
+              messages
+            )
+          }
         })
+      })
 
-        messages.injectIfMatchesFound()
-      },
+      messages.injectIfMatchesFound()
     },
-  }
-}
+  },
+})
 
 /**
  * Get the injected localized messages in a local scope.
