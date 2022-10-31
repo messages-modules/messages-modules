@@ -328,7 +328,7 @@ const hijackNamedImport = (
       // Rename all bindings with the the new name (this excludes the import declaration).
       const binding = nodePath.scope.getBinding(currentName)
 
-      if (!binding) {
+      if (!binding || binding.referencePaths.length === 0) {
         return // If the function is unused (no binding), no need to hijack.
       }
 
@@ -440,8 +440,6 @@ export const messageModulePlugin = (
         hijackTargets.forEach((hijackTarget) => {
           // Try to hijack matching named import statements.
           if (isMatchingNamedImport(bodyNodePath, hijackTarget)) {
-            // console.log('----------')
-            // console.dir(bodyNodePath)
             hijackNamedImport(bodyNodePath as NodePath<ImportDeclaration>, hijackTarget, messages)
           }
           // Try to hijack matching named export statements.
