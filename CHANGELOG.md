@@ -1,3 +1,9 @@
+## [1.1.17](https://github.com/Avansai/messages-modules/compare/1.1.16...1.1.17) (2022-10-31)
+
+### Bug Fixes
+
+- fix issue where an unused import could cause build failure ([9630422](https://github.com/Avansai/messages-modules/commit/9630422de02314928dfab3793540e56ab551daaf))
+
 ## [1.1.16](https://github.com/Avansai/messages-modules/compare/1.1.15...1.1.16) (2022-10-27)
 
 ## [1.1.15](https://github.com/Avansai/messages-modules/compare/1.1.14...1.1.15) (2022-10-20)
