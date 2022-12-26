@@ -43,14 +43,14 @@
     "internationalization"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.19.3",
-    "@babel/core": "^7.20.5",
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.7",
     "@release-it/conventional-changelog": "^5.1.1",
     "@types/babel__core": "^7.1.20",
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.17",
-    "@typescript-eslint/eslint-plugin": "^5.46.1",
-    "@typescript-eslint/parser": "^5.46.1",
+    "@typescript-eslint/eslint-plugin": "^5.47.0",
+    "@typescript-eslint/parser": "^5.47.0",
     "dotenv-cli": "^6.0.0",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
@@ -71,7 +71,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "properties-file": "^2.1.19"
+    "properties-file": "^2.1.20"
   },
   "engines": {
     "node": "^14.18.1 || >=16.0.0"
