@@ -426,7 +426,7 @@ const hijackNamedExport = (
  *
  * @param messagesFileExtension - The file extension of the messages file.
  * @param getMessages - The function used to get the messages.
- *  */
+ */
 export const messageModulePlugin = (
   hijackTargets: HijackTarget[],
   messagesFileExtension: string,
