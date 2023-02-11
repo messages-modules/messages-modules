@@ -273,7 +273,9 @@ class Messages {
    * Inject the messages to the program node path, if the variable name was used.
    */
   public injectIfMatchesFound(): void {
-    if (!this.getVariableNameCount) return
+    if (!this.getVariableNameCount) {
+      return
+    }
 
     // Inject the messages at the beginning o the file.
     this.programNodePath.node.body.unshift(
