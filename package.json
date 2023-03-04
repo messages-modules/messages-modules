@@ -1,6 +1,6 @@
 {
   "name": "messages-modules",
-  "version": "1.1.33",
+  "version": "1.1.34",
   "description": "Messages (localized strings) that are scoped locally.",
   "keywords": [
     "messages-modules",
