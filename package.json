@@ -43,17 +43,17 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "properties-file": "^2.1.31"
+    "properties-file": "^2.1.32"
   },
   "devDependencies": {
     "@babel/cli": "^7.21.0",
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.21.3",
     "@release-it/conventional-changelog": "^5.1.1",
     "@types/babel__core": "^7.20.0",
-    "@types/jest": "^29.4.0",
-    "@types/node": "^18.15.0",
-    "@typescript-eslint/eslint-plugin": "^5.54.1",
-    "@typescript-eslint/parser": "^5.54.1",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.3",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
     "dotenv-cli": "^7.1.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
@@ -70,10 +70,10 @@
     "prettier": "^2.8.4",
     "prettier-plugin-organize-imports": "^3.2.2",
     "prettier-plugin-sh": "^0.12.8",
-    "release-it": "^15.8.0",
+    "release-it": "^15.9.0",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.2"
   },
   "engines": {
     "node": "^14.18.1 || >=16.0.0"
