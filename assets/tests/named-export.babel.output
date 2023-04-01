@@ -18,17 +18,18 @@ const _getMessagesFunction = getMessages.bind(_messages);
 export const sharedMessages = _getMessagesFunction;
 
 // Test 2: Exporting a "named export" that has the same name as the import
+// Test 3: Exporting a "name export" using a specific name
 const {
   getMessages: _getMessagesFunction2
 } = require('messages-modules');
 const _getMessagesFunction3 = _getMessagesFunction2.bind(_messages);
 export { _getMessagesFunction3 as getMessages };
+// Test 4: Multiple named export, with only 1 left not being hijacked (export statement should remain for 1)
 const {
   getMessages: _getMessagesFunction4
 } = require('messages-modules');
 const _getMessagesFunction5 = _getMessagesFunction4.bind(_messages);
 export { _getMessagesFunction5 as getMessages2 };
-// Test 4: Multiple named export, with only 1 left not being hijacked (export statement should remain for 1)
 export { someOtherFunction } from 'messages-modules';
 
 // Test 5: Multiple named export, all being hijacked (export statement should be deleted)
