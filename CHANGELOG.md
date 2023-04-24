@@ -1,3 +1,5 @@
+## [1.1.41](https://github.com/Avansai/messages-modules/compare/1.1.40...1.1.41) (2023-04-24)
+
 ## [1.1.40](https://github.com/Avansai/messages-modules/compare/1.1.39...1.1.40) (2023-04-16)
 
 ## [1.1.39](https://github.com/Avansai/messages-modules/compare/1.1.38...1.1.39) (2023-04-08)
