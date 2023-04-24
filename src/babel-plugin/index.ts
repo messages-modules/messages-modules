@@ -1,8 +1,7 @@
-import { propertiesToJson } from 'properties-file'
-
-import { HijackTarget, KeyValueObject, messageModulePlugin } from '../'
-
 import type { PluginObj } from '@babel/core'
+import { readFileSync } from 'node:fs'
+import { getProperties } from 'properties-file'
+import { HijackTarget, KeyValueObject, messageModulePlugin } from '../'
 
 /**
  * Targets to hijack.
@@ -22,7 +21,7 @@ export const hijackTargets: HijackTarget[] = [
  * @returns A "key/value" object storing messages where the key only contains the identifier segment of the key.
  */
 export const getMessages = (propertiesFilePath: string): KeyValueObject =>
-  propertiesToJson(propertiesFilePath)
+  getProperties(readFileSync(propertiesFilePath))
 
 /**
  * This an example Babel plugin.
