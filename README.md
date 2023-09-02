@@ -66,7 +66,7 @@ To keep this simple, the `message-modules` plugins only support **named imports*
 
 👍 **Supported**
 
-```ts
+```js
 // Named import
 import { getMessages } from 'messages-modules'
 // Named export (used for shared messages)
