@@ -43,7 +43,7 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "properties-file": "3.3.15"
+    "properties-file": "3.3.16"
   },
   "devDependencies": {
     "@babel/cli": "7.23.4",
@@ -51,16 +51,16 @@
     "@release-it/conventional-changelog": "8.0.1",
     "@types/babel__core": "7.20.5",
     "@types/jest": "29.5.11",
-    "@types/node": "20.10.6",
-    "@typescript-eslint/eslint-plugin": "6.16.0",
-    "@typescript-eslint/parser": "6.16.0",
+    "@types/node": "20.10.7",
+    "@typescript-eslint/eslint-plugin": "6.18.0",
+    "@typescript-eslint/parser": "6.18.0",
     "dotenv-cli": "7.3.0",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-import-resolver-node": "0.3.9",
     "eslint-import-resolver-typescript": "3.6.1",
     "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-jest": "27.6.0",
+    "eslint-plugin-jest": "27.6.1",
     "eslint-plugin-json-files": "4.1.0",
     "eslint-plugin-prefer-arrow-functions": "3.2.4",
     "eslint-plugin-prettier": "5.1.2",
