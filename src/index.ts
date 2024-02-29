@@ -435,6 +435,7 @@ export const messageModulePlugin = (
   getMessages: (messagesFilePath: string) => KeyValueObject
 ): PluginObj => ({
   visitor: {
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     Program: (programNodePath: NodePath<Program>, pluginPass: PluginPass) => {
       const messages = new Messages(programNodePath, pluginPass, messagesFileExtension, getMessages)
 
