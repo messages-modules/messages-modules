@@ -1,3 +1,9 @@
+# [1.2.0](https://github.com/Avansai/messages-modules/compare/1.1.79...1.2.0) (2024-02-29)
+
+### Features
+
+- **cjs/esm:** add dual CJS/ESM compatibility ([20d2cac](https://github.com/Avansai/messages-modules/commit/20d2cac9d25ed4b45d9715018c6822e9043f4c27))
+
 ## [1.1.79](https://github.com/Avansai/messages-modules/compare/1.1.78...1.1.79) (2024-02-11)
 
 ## [1.1.78](https://github.com/Avansai/messages-modules/compare/1.1.77...1.1.78) (2024-01-28)
