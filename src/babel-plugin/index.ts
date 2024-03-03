@@ -1,7 +1,7 @@
 import type { PluginObj } from '@babel/core'
 import { readFileSync } from 'node:fs'
 import { getProperties } from 'properties-file'
-import { HijackTarget, KeyValueObject, messageModulePlugin } from '../'
+import { HijackTarget, KeyValueObject, messageModulePlugin } from '..'
 
 /**
  * Targets to hijack.
