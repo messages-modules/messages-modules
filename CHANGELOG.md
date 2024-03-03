@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/Avansai/messages-modules/compare/1.2.0...1.2.1) (2024-03-03)
+
+### Bug Fixes
+
+- correct ESM paths for dual CJS/ESM compatibility ([3a9ce48](https://github.com/Avansai/messages-modules/commit/3a9ce48985f8243e002baf5629067a17afbf1045))
+
 # [1.2.0](https://github.com/Avansai/messages-modules/compare/1.1.79...1.2.0) (2024-02-29)
 
 ### Features
