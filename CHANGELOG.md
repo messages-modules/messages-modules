@@ -1,3 +1,5 @@
+## [1.2.2](https://github.com/Avansai/messages-modules/compare/1.2.1...1.2.2) (2024-03-14)
+
 ## [1.2.1](https://github.com/Avansai/messages-modules/compare/1.2.0...1.2.1) (2024-03-03)
 
 ### Bug Fixes
