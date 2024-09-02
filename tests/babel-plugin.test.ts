@@ -12,7 +12,7 @@ const testAssets = ['./assets/tests/named-import', './assets/tests/named-export'
  */
 const normalizeCommandOutput = (output: string | Buffer): string => {
   const normalizedOutput = Buffer.isBuffer(output) ? output.toString() : output
-  return normalizedOutput.trim().replace(new RegExp('\\r\\n', 'g'), '\n')
+  return normalizedOutput.trim().replace(new RegExp(String.raw`\r\n`, 'g'), '\n')
 }
 
 describe('The compiled output of', () => {

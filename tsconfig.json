@@ -3,7 +3,9 @@
     "target": "es5",
     "declaration": true,
     "downlevelIteration": true,
+    "esModuleInterop": true,
     "strict": true
   },
+  "exclude": ["src/build-scripts", "assets"],
   "include": ["src/**/*.ts"]
 }

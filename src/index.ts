@@ -1,5 +1,5 @@
 import { readdirSync } from 'node:fs'
-import { parse, sep as pathSeparator } from 'node:path'
+import path from 'node:path'
 
 import template from '@babel/template'
 import * as BabelTypes from '@babel/types'
@@ -29,7 +29,8 @@ const isIdentifier = BabelTypes.isIdentifier
  *
  * @returns An escaped regular expression.
  */
-const escapeRegExp = (regexp: string): string => regexp.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&')
+const escapeRegExp = (regexp: string): string =>
+  regexp.replace(/[$()*+.?[\\\]^{|}]/g, String.raw`\$&`)
 
 /**
  * A target to hijack.
@@ -94,7 +95,7 @@ const getInjectedMessages = (
   messagesFileExtension: string,
   getMessages: (messagesFilePath: string) => KeyValueObject
 ): string => {
-  const parsedSourceFile = parse(sourceFilePath)
+  const parsedSourceFile = path.parse(sourceFilePath)
   const sourceFileDirectoryPath = parsedSourceFile.dir
   const sourceFilename = parsedSourceFile.name
   const injectedMessages = new InjectedMessages(sourceFilePath)
@@ -236,7 +237,7 @@ class Messages {
   ) {
     this.programNodePath = programNodePath
 
-    const leadingPathSeparatorRegExp = new RegExp(`^${escapeRegExp(pathSeparator)}`)
+    const leadingPathSeparatorRegExp = new RegExp(`^${escapeRegExp(path.sep)}`)
 
     // this.sourceFilePath = (pluginPass as PluginPass).file.opts.filename
     const pluginPassFilename = pluginPass.file.opts?.filename
@@ -249,9 +250,9 @@ class Messages {
       .replace(process.cwd(), '') // Remove absolute portion of the path to make is "app-root-relative".
       .replace(leadingPathSeparatorRegExp, '') // Remove leading path separator (e.g., '/') if present.
 
-    if (pathSeparator !== '/') {
+    if (path.sep !== '/') {
       // Normalize path separators to `/`.
-      const separatorRegExp = new RegExp(`${escapeRegExp(pathSeparator)}`, 'g')
+      const separatorRegExp = new RegExp(`${escapeRegExp(path.sep)}`, 'g')
       this.sourceFilePath = this.sourceFilePath.replace(separatorRegExp, '/')
     }
 
