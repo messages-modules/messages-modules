@@ -1,3 +1,5 @@
+## [1.2.8](https://github.com/messages-modules/messages-modules/compare/1.2.7...1.2.8) (2024-12-16)
+
 ## [1.2.7](https://github.com/messages-modules/messages-modules/compare/1.2.6...1.2.7) (2024-11-23)
 
 ## [1.2.6](https://github.com/messages-modules/messages-modules/compare/1.2.5...1.2.6) (2024-10-05)
