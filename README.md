@@ -1,7 +1,6 @@
 # messages-modules
 
 [![License](https://img.shields.io/npm/l/make-coverage-badge.svg?color=brightgreen)](https://opensource.org/licenses/MIT)
-[![npm download](https://img.shields.io/npm/dw/messages-modules.svg?color=brightgreen)](https://www.npmjs.com/package/messages-modules)
 ![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 
 Messages (localized strings) that are scoped locally.
