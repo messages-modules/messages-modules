@@ -4,7 +4,6 @@ To write tests you can create a new TypeScript file accompanied with it's messag
 
 A useful tool to use when parsing these file is the [AST Explorer](https://astexplorer.net/) that can help you view how the code is parsed by the plugin.
 
-
 ## Useful commands
 
 To test plugin changes, on existing tests:

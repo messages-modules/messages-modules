@@ -1,10 +1,8 @@
-import { readdirSync } from 'node:fs'
-import path from 'node:path'
-
+import type { NodePath, PluginObj, PluginPass } from '@babel/core'
 import template from '@babel/template'
 import * as BabelTypes from '@babel/types'
-
-import type { NodePath, PluginObj, PluginPass } from '@babel/core'
+import { readdirSync } from 'node:fs'
+import path from 'node:path'
 
 export type Program = BabelTypes.Program
 export type Statement = BabelTypes.Statement

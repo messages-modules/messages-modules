@@ -6,6 +6,6 @@
     "esModuleInterop": true,
     "strict": true
   },
-  "exclude": ["src/build-scripts", "assets"],
+  "exclude": ["src/build-scripts"],
   "include": ["src/**/*.ts"]
 }

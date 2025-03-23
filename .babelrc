@@ -1,3 +1,3 @@
 {
-  "plugins": ["./lib/cjs/babel-plugin/index"]
+  "plugins": ["./dist/cjs/babel-plugin/index"]
 }
