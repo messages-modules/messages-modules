@@ -44,17 +44,17 @@ const {
 const _getMessagesFunction7 = _getMessagesFunction6.bind(_messages);
 export { _getMessagesFunction7 as getMessages4 };
 const {
-  getMessages: _getMessagesFunction14
-} = require('messages-modules');
-const _getMessagesFunction15 = _getMessagesFunction14.bind(_messages);
-export { _getMessagesFunction15 as getMessages5 };
-const {
   getMessages: _getMessagesFunction12
 } = require('messages-modules');
 const _getMessagesFunction13 = _getMessagesFunction12.bind(_messages);
-export { _getMessagesFunction13 as getMessages6 };
+export { _getMessagesFunction13 as getMessages5 };
 const {
   getMessages: _getMessagesFunction10
 } = require('messages-modules');
 const _getMessagesFunction11 = _getMessagesFunction10.bind(_messages);
-export { _getMessagesFunction11 as getMessages7 };
+export { _getMessagesFunction11 as getMessages6 };
+const {
+  getMessages: _getMessagesFunction0
+} = require('messages-modules');
+const _getMessagesFunction1 = _getMessagesFunction0.bind(_messages);
+export { _getMessagesFunction1 as getMessages7 };
